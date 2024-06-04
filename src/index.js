@@ -1,20 +1,20 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const routes = require("../src/routes");
+const bodyParser = require("body-parser");
 
 const app = express();
 const port = process.env.PORT || 3001;
 
 dotenv.config();
 
-app.get("/", (req, res) => {
-  res.send("Hello World 123123");
-});
+app.use(bodyParser.json());
+
+routes(app);
 
 mongoose
-  .connect(
-    `mongodb+srv://ngquangcodernew:${process.env.MONGO_DB}@cluster0.kqjumls.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-  )
+  .connect(`${process.env.MONGO_DB}`)
   .then(() => {
     console.log("Success");
   })
