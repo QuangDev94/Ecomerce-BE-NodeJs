@@ -1,4 +1,4 @@
-const UserService = require("../services/UserServices");
+const UserService = require("../services/UserService");
 
 const createUser = async (req, res) => {
   try {
@@ -31,6 +31,33 @@ const createUser = async (req, res) => {
   }
 };
 
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const reg =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const isValidEmail = reg.test(email);
+    if (!email || !password) {
+      return res.status(200).json({
+        status: "ERROR",
+        message: "The input is required!",
+      });
+    } else if (!isValidEmail) {
+      return res.status(200).json({
+        status: "ERROR",
+        message: "The email is invalid!",
+      });
+    }
+    const response = await UserService.loginUser(req.body);
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      message: error,
+    });
+  }
+};
+
 module.exports = {
   createUser,
+  loginUser,
 };
