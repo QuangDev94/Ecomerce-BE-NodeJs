@@ -94,9 +94,41 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const getDetailsUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    console.log(typeof userId);
+    if (!userId) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "The userId is required",
+      });
+    }
+    const response = await UserService.getDetailsUser(userId);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const getAllUser = async (req, res) => {
+  try {
+    const response = await UserService.getAllUser();
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
   updateUser,
   deleteUser,
+  getDetailsUser,
+  getAllUser,
 };
