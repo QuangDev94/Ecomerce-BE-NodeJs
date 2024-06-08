@@ -83,14 +83,20 @@ const getProduct = (productId) => {
   });
 };
 
-const getAll = () => {
+const getAll = (limit = 2, page = 0) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const allProduct = await Product.find();
+      const totalProduct = await Product.countDocuments();
+      const allProduct = await Product.find()
+        .limit(limit)
+        .skip(page * limit);
       resolve({
         status: "OK",
         message: "SUCCESS",
         data: allProduct,
+        total: totalProduct,
+        pageCurrent: Number(page) + 1,
+        totalPage: Math.ceil(totalProduct / limit),
       });
     } catch (e) {
       reject(e);
