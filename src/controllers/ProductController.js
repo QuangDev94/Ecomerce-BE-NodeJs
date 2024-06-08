@@ -57,8 +57,13 @@ const getProduct = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
-    const { limit, page } = req.query;
-    const response = await ProductService.getAll(limit, page);
+    const { limit, page, sort, filter } = req.query;
+    const response = await ProductService.getAll(
+      limit || 8,
+      page || 0,
+      sort,
+      filter
+    );
     return res.status(200).json({ response });
   } catch (e) {
     return res.status(404).json({
