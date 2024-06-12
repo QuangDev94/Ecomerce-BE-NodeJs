@@ -7,7 +7,7 @@ const createUser = async (req, res) => {
     const reg =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const isValidEmail = reg.test(email);
-    if (!name || !email || !password || !confirmPassword || !phone) {
+    if (!email || !password || !confirmPassword) {
       return res.status(200).json({
         status: "ERROR",
         message: "The input is required!",
@@ -50,7 +50,12 @@ const loginUser = async (req, res) => {
       });
     }
     const response = await UserService.loginUser(req.body);
-    return res.status(200).json(response);
+    const { refresh_token, ...newResponse } = response;
+    res.cookie("refresh_token", refresh_token, {
+      HttpOnly: true,
+      secure: true,
+    });
+    return res.status(200).json(newResponse);
   } catch (error) {
     return res.status(404).json({
       message: error,
@@ -125,8 +130,9 @@ const getAllUser = async (req, res) => {
 };
 
 const refreshToken = async (req, res) => {
+  console.log("cookie", req.cookies);
   try {
-    const token = req.headers.token.split(" ")[1];
+    const token = req.cookies.refresh_token;
     if (!token) {
       return res.status(200).json({
         status: "ERR",
