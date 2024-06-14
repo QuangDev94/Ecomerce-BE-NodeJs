@@ -3,7 +3,7 @@ const JwtService = require("../services/JwtService");
 
 const createUser = async (req, res) => {
   try {
-    const { name, email, password, confirmPassword, phone } = req.body;
+    const { email, password, confirmPassword } = req.body;
     const reg =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const isValidEmail = reg.test(email);
@@ -52,8 +52,9 @@ const loginUser = async (req, res) => {
     const response = await UserService.loginUser(req.body);
     const { refresh_token, ...newResponse } = response;
     res.cookie("refresh_token", refresh_token, {
-      HttpOnly: true,
-      secure: true,
+      httpOnly: true,
+      secure: false,
+      samesite: "strict",
     });
     return res.status(200).json(newResponse);
   } catch (error) {
@@ -130,7 +131,6 @@ const getAllUser = async (req, res) => {
 };
 
 const refreshToken = async (req, res) => {
-  console.log("cookie", req.cookies);
   try {
     const token = req.cookies.refresh_token;
     if (!token) {
@@ -147,6 +147,21 @@ const refreshToken = async (req, res) => {
     });
   }
 };
+
+const logoutUser = async (req, res) => {
+  try {
+    res.clearCookie("refresh_token");
+    return res.status(200).json({
+      status: "OK",
+      message: "Success",
+    });
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -155,4 +170,5 @@ module.exports = {
   getDetailsUser,
   getAllUser,
   refreshToken,
+  logoutUser,
 };
