@@ -10,12 +10,12 @@ const router = express.Router();
 router.post("/sign-up", userController.createUser);
 router.post("/sign-in", userController.loginUser);
 router.post("/log-out", userController.logoutUser);
-router.put("/update-user/:id", userController.updateUser);
+router.put("/update-user/:id", authUserMiddleWare, userController.updateUser);
 router.delete("/delete-user/:id", authMiddleWare, userController.deleteUser);
 router.get(
   "/get-details/:id",
   authUserMiddleWare,
-  userController.getDetailsUser
+  userController.getDetailsUser,
 );
 router.get("/get-all", authMiddleWare, userController.getAllUser);
 router.post("/refresh-token", userController.refreshToken);
