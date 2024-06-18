@@ -62,7 +62,7 @@ const getAll = async (req, res) => {
       limit || 8,
       page || 0,
       sort,
-      filter
+      filter,
     );
     return res.status(200).json({ response });
   } catch (e) {

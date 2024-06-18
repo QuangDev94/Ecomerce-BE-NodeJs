@@ -9,10 +9,12 @@ const productSchema = new mongoose.Schema(
     rating: { type: Number, required: true },
     countInStock: { type: Number, required: true },
     description: { type: String },
+    discount: { type: Number },
+    solded: { type: Number },
   },
   {
     timestamp: true,
-  }
+  },
 );
 
 const Product = mongoose.model("Product", productSchema);
