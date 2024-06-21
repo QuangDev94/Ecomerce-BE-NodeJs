@@ -22,6 +22,8 @@ const createUser = (newUser) => {
       const createdUser = await User.create({
         name,
         email,
+        phone: newUser.phone,
+        address: newUser.address,
         password: hash,
       });
       if (createdUser) {
@@ -129,6 +131,7 @@ const deleteUser = (id) => {
         resolve({
           status: "OK",
           message: "SUCCESS",
+          data: deletedUser,
         });
       }
     } catch (error) {
