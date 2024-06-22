@@ -22,8 +22,9 @@ const createUser = (newUser) => {
       const createdUser = await User.create({
         name,
         email,
-        phone: newUser.phone,
-        address: newUser.address,
+        phone:
+          newUser?.phone || Number(Math.floor(Math.random() * 10000000000)),
+        address: newUser?.address,
         password: hash,
       });
       if (createdUser) {
