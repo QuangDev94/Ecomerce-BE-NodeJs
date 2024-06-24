@@ -106,16 +106,19 @@ const getAll = (limit, page, sort, filter) => {
         const label = filter[0];
         const allProductFilter = await Product.find({
           [label]: { $regex: filter[1] },
+        });
+        const prodctFilterAfterLimit = await Product.find({
+          [label]: { $regex: filter[1] },
         })
           .limit(limit)
           .skip(page * limit);
         resolve({
           status: "OK",
           message: "SUCCESS",
-          data: allProductFilter,
-          total: totalProduct,
+          data: prodctFilterAfterLimit,
+          total: allProductFilter?.length,
           pageCurrent: Number(page) + 1,
-          totalPage: Math.ceil(totalProduct / limit),
+          totalPage: Math.ceil(allProductFilter?.length / limit),
         });
       }
       if (sort) {

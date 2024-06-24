@@ -70,7 +70,7 @@ const getAll = async (req, res) => {
   try {
     const { limit, page, sort, filter } = req.query;
     const response = await ProductService.getAll(
-      limit || 8,
+      limit || 4,
       page || 0,
       sort,
       filter,
