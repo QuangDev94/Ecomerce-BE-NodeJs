@@ -15,6 +15,7 @@ const createProduct = (data) => {
       } else {
         const createdProduct = await Product.create({
           ...data,
+          quality: Number(data.countInStock),
         });
         if (createdProduct) {
           resolve({
