@@ -39,7 +39,7 @@ const createOrder = async (req, res) => {
   }
 };
 
-const getOrderDetails = async (req, res) => {
+const getMyOrderAll = async (req, res) => {
   try {
     const userId = req.params.id;
     if (!userId) {
@@ -49,7 +49,7 @@ const getOrderDetails = async (req, res) => {
       });
     }
 
-    const response = await OrderService.getOrderDetails(userId);
+    const response = await OrderService.getMyOrderAll(userId);
     return res.status(200).json(response);
   } catch (error) {
     return res.status(404).json({
@@ -57,7 +57,49 @@ const getOrderDetails = async (req, res) => {
     });
   }
 };
+
+const getMyOrderDetails = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    console.log("orderId: ", orderId);
+    if (!orderId) {
+      return res.status(200).json({
+        status: "ERROR",
+        message: "The orderId is required",
+      });
+    }
+
+    const response = await OrderService.getMyOrderDetails(orderId);
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      message: error,
+    });
+  }
+};
+
+const cancelOrder = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    if (!orderId) {
+      return res.status(200).json({
+        status: "ERROR",
+        message: "The orderId is required",
+      });
+    }
+
+    const response = await OrderService.getMyOrderDetails(orderId);
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      message: error,
+    });
+  }
+};
+
 module.exports = {
   createOrder,
-  getOrderDetails,
+  getMyOrderAll,
+  getMyOrderDetails,
+  cancelOrder,
 };
