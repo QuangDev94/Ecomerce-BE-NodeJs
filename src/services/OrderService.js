@@ -31,15 +31,21 @@ const createOrder = (newOrder) => {
           return {
             status: "OK",
             message: "ERROR",
-            data: item?.product,
+            data: item?.name,
           };
         }
       });
       const result = await Promise.all(promise);
-      const checkResult = result.every((i) => {
-        return i.message === "SUCCESS";
+      const filterResult = result.filter((i) => {
+        return i.message === "ERROR";
       });
-      if (checkResult) {
+      const newFilterResult = filterResult.map((i) => i.data);
+      if (filterResult.length > 0) {
+        reject({
+          status: "OK",
+          message: `Products ${newFilterResult.join(",")} Out Of Stock`,
+        });
+      } else {
         const updatePromise = orderItems.map(async (item) => {
           const productChecking = await Product.findOneAndUpdate(
             {
@@ -77,11 +83,6 @@ const createOrder = (newOrder) => {
             data: createOrder,
           });
         }
-      } else {
-        reject({
-          status: "OK",
-          message: "Product Out Of Stock",
-        });
       }
     } catch (error) {
       reject(error);
@@ -135,23 +136,58 @@ const getMyOrderDetails = (id) => {
   });
 };
 
-const cancelOrder = (id) => {
+const cancelOrder = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const order = await Order.findByIdAndDelete({
-        _id: id,
+      const promise = data?.orderItems?.map(async (item) => {
+        const productUpdate = await Product.findOneAndUpdate(
+          {
+            _id: item?.product,
+          },
+          {
+            $inc: {
+              quality: +item?.amount,
+              solded: -item?.amount,
+            },
+          },
+          {
+            new: true,
+          },
+        );
+        if (productUpdate) {
+          return {
+            status: "OK",
+            message: "SUCCESS",
+          };
+        } else {
+          return {
+            status: "OK",
+            message: "ERROR",
+            data: item?.product,
+          };
+        }
       });
-      if (order === null) {
-        resolve({
-          status: "ERROR",
-          message: "The order is not defined",
+      const result = await Promise.all(promise);
+      const checkResult = result.every((i) => {
+        return i.message === "SUCCESS";
+      });
+      if (checkResult) {
+        const order = await Order.findById({
+          _id: data.orderId,
         });
+        if (order === null) {
+          resolve({
+            status: "ERROR",
+            message: "The order is not defined",
+          });
+        } else {
+          resolve({
+            status: "OK",
+            message: "SUCCESS",
+            data: order,
+          });
+        }
       }
-      resolve({
-        status: "OK",
-        message: "SUCCESS",
-        data: order,
-      });
     } catch (error) {
       reject(error);
     }

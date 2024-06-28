@@ -17,7 +17,7 @@ router.get(
   orderController.getMyOrderDetails,
 );
 
-router.delete(
+router.post(
   "/cancel-order/:id",
   authUserMiddleWare,
   orderController.cancelOrder,

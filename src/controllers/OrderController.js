@@ -80,7 +80,7 @@ const getMyOrderDetails = async (req, res) => {
 
 const cancelOrder = async (req, res) => {
   try {
-    const orderId = req.params.id;
+    const orderId = req.body.orderId;
     if (!orderId) {
       return res.status(200).json({
         status: "ERROR",
@@ -88,7 +88,7 @@ const cancelOrder = async (req, res) => {
       });
     }
 
-    const response = await OrderService.getMyOrderDetails(orderId);
+    const response = await OrderService.cancelOrder(req.body);
     return res.status(200).json(response);
   } catch (error) {
     return res.status(404).json({
