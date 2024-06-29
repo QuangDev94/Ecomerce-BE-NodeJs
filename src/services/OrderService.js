@@ -14,6 +14,8 @@ const createOrder = (newOrder) => {
       city,
       phone,
       user,
+      isPaid,
+      paidAt,
     } = newOrder;
 
     try {
@@ -75,6 +77,8 @@ const createOrder = (newOrder) => {
           shippingPrice,
           totalPrice,
           user,
+          isPaid,
+          paidAt,
         });
         if (createOrder) {
           resolve({
