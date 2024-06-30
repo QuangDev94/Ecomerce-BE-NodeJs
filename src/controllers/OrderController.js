@@ -58,10 +58,20 @@ const getMyOrderAll = async (req, res) => {
   }
 };
 
+const getOrderAll = async (req, res) => {
+  try {
+    const response = await OrderService.getOrderAll();
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      message: error,
+    });
+  }
+};
+
 const getMyOrderDetails = async (req, res) => {
   try {
     const orderId = req.params.id;
-    console.log("orderId: ", orderId);
     if (!orderId) {
       return res.status(200).json({
         status: "ERROR",
@@ -102,4 +112,5 @@ module.exports = {
   getMyOrderAll,
   getMyOrderDetails,
   cancelOrder,
+  getOrderAll,
 };

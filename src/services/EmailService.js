@@ -13,8 +13,10 @@ const sendEmailCreateOrder = async (email, orderItems) => {
     },
   });
   let listItem = "";
+  const attachImages = [];
   orderItems.forEach((order) => {
     listItem += `<b>${order.name}</b><br></br>`;
+    attachImages.push({ path: order.image });
   });
   const info = await transporter.sendMail({
     from: process.env.MAIL_ACCOUNT, // sender address
@@ -22,9 +24,9 @@ const sendEmailCreateOrder = async (email, orderItems) => {
     subject: "You have ordered success at QuangDev-Shop", // Subject line
     text: "Ordered Success", // plain text body
     html: `<b>You have ordered success : </b><br></br>${listItem}`, // html body
+    attachments: attachImages,
   });
 
-  console.log("Message sent: %s", info.messageId);
 };
 
 module.exports = {

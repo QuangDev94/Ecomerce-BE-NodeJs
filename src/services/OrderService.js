@@ -1,6 +1,7 @@
 const Order = require("../models/OrderModel");
 const Product = require("../models/ProductModel");
 const EmailService = require("../services/EmailService");
+
 const createOrder = (newOrder) => {
   return new Promise(async (resolve, reject) => {
     const {
@@ -200,9 +201,24 @@ const cancelOrder = (data) => {
   });
 };
 
+const getOrderAll = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const allOrder = await Order.find().populate("user");
+      resolve({
+        status: "OK",
+        message: "Success",
+        data: allOrder,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   createOrder,
   getMyOrderAll,
   getMyOrderDetails,
   cancelOrder,
+  getOrderAll,
 };
