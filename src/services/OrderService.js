@@ -1,6 +1,6 @@
 const Order = require("../models/OrderModel");
 const Product = require("../models/ProductModel");
-
+const EmailService = require("../services/EmailService");
 const createOrder = (newOrder) => {
   return new Promise(async (resolve, reject) => {
     const {
@@ -16,6 +16,7 @@ const createOrder = (newOrder) => {
       user,
       isPaid,
       paidAt,
+      email,
     } = newOrder;
 
     try {
@@ -81,6 +82,7 @@ const createOrder = (newOrder) => {
           paidAt,
         });
         if (createOrder) {
+          await EmailService.sendEmailCreateOrder(email, orderItems);
           resolve({
             status: "OK",
             message: "SUCCESS",

@@ -9,4 +9,5 @@ router.get("/config", (req, res) => {
     data: process.env.CLIENT_ID,
   });
 });
+
 module.exports = router;
